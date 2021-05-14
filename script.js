@@ -34,6 +34,7 @@ const account4 = {
 };
 
 const accounts = [account1, account2, account3, account4];
+let currentAccount;
 
 // Elements
 const labelWelcome = document.querySelector('.welcome');
@@ -62,7 +63,7 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 //Functions
-const displayMovements = function(movements) {
+const displayMovements = function (movements) {
   containerMovements.innerHTML = '';
 
   movements.forEach((movement, index) => {
@@ -80,7 +81,7 @@ const displayMovements = function(movements) {
 }
 
 const createUsernames = function (accs) {
-  accs.forEach( acc => {
+  accs.forEach(acc => {
     acc.username = acc.owner.toLowerCase().split(' ').map(name => name[0]).join('');
   });
 }
@@ -91,20 +92,20 @@ const displayBalance = function (mov) {
   labelBalance.textContent = `${balance}€`;
 }
 
-const displaySummary = function (mov) {
-  const incomes = mov
-    .filter( m => m > 0 )
+const displaySummary = function ({movements, interestRate}) {
+  const incomes = movements
+    .filter(m => m > 0)
     .reduce((acc, cur) => acc + cur, 0);
 
-  const out = mov
-    .filter( m => m < 0)
+  const out = movements
+    .filter(m => m < 0)
     .reduce((acc, cur) => acc + cur, 0);
 
-  const interest = mov
-  .filter( m => m > 0)
-  .map( dep => dep * 1.2 / 100)
-  .filter( int => int >= 1)
-  .reduce((acc, cur) => acc + cur, 0);
+  const interest = movements
+    .filter(m => m > 0)
+    .map(dep => dep * interestRate / 100)
+    .filter(int => int >= 1)
+    .reduce((acc, cur) => acc + cur, 0);
 
   labelSumIn.textContent = `${incomes}€`;
   labelSumOut.textContent = `${Math.abs(out)}€`;
@@ -112,12 +113,32 @@ const displaySummary = function (mov) {
 }
 
 //Events
+btnLogin.addEventListener('click', function (event) {
+  //prevent form from submitting
+  event.preventDefault();
 
+  currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    labelWelcome.textContent = `Welcome, ${currentAccount.owner.split(' ')[0]}!`
 
-displayMovements(account1.movements);
-displaySummary(account1.movements)
+    displayBalance(currentAccount.movements);
+    displaySummary(currentAccount);
+    displayMovements(currentAccount.movements);
+
+    containerApp.style.opacity = 100;
+    inputLoginUsername.value = '';
+    inputLoginPin.value = '';
+    inputLoginPin.blur();
+  }
+  else {
+    alert('Wrong username or pin. Please, try again.')
+    containerApp.style.opacity = 0;
+  }
+
+  console.log(currentAccount.pin === Number(inputLoginPin.value));
+});
+
 createUsernames(accounts);
-displayBalance(account1.movements)
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
