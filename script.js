@@ -61,6 +61,7 @@ const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
+const wrongUser = document.querySelector('#wrong_user');
 
 //Functions
 const displayMovements = function (movements) {
@@ -88,11 +89,10 @@ const createUsernames = function (accs) {
 
 const displayBalance = function (mov) {
   const balance = mov.reduce((acc, current) => acc + current, 0);
-
   labelBalance.textContent = `${balance}€`;
 }
 
-const displaySummary = function ({movements, interestRate}) {
+const displaySummary = function ({ movements, interestRate }) {
   const incomes = movements
     .filter(m => m > 0)
     .reduce((acc, cur) => acc + cur, 0);
@@ -112,30 +112,50 @@ const displaySummary = function ({movements, interestRate}) {
   labelSumInterest.textContent = `${interest}€`;
 }
 
+function showAccountInfo(loggedAccount) {
+  const hour = new Date().getHours();
+  let momentOfDay;
+
+  if (hour < 12) momentOfDay = 'Good Morning';
+  else if (hour >= 12 && hour < 18) momentOfDay = 'Good Afternoon';
+  else momentOfDay = 'Good Evening';
+
+  labelWelcome.textContent = `${momentOfDay}, ${loggedAccount.owner.split(' ')[0]}!`;
+
+  displayBalance(loggedAccount.movements);
+  displaySummary(loggedAccount);
+  displayMovements(loggedAccount.movements);
+
+  containerApp.style.opacity = 100;
+  inputLoginUsername.value = '';
+  inputLoginPin.value = '';
+  inputLoginPin.blur();
+}
+
+function showLoginError() {
+  wrongUser.style.display = 'initial';
+  wrongUser.style.opacity = 1;
+  wrongUser.style.transition = 'all 1s';
+  wrongUser.textContent = 'Wrong username or pin. Please, try again.';
+  labelWelcome.textContent = 'Oh no :\'(';
+
+  setTimeout(() => {
+    wrongUser.style.opacity = 0;
+    wrongUser.style.transition = 'all 1s';
+  }, 3000);
+
+  containerApp.style.opacity = 0;
+}
+
 //Events
 btnLogin.addEventListener('click', function (event) {
   //prevent form from submitting
   event.preventDefault();
 
   currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
-  if (currentAccount?.pin === Number(inputLoginPin.value)) {
-    labelWelcome.textContent = `Welcome, ${currentAccount.owner.split(' ')[0]}!`
-
-    displayBalance(currentAccount.movements);
-    displaySummary(currentAccount);
-    displayMovements(currentAccount.movements);
-
-    containerApp.style.opacity = 100;
-    inputLoginUsername.value = '';
-    inputLoginPin.value = '';
-    inputLoginPin.blur();
-  }
-  else {
-    alert('Wrong username or pin. Please, try again.')
-    containerApp.style.opacity = 0;
-  }
-
-  console.log(currentAccount.pin === Number(inputLoginPin.value));
+  currentAccount?.pin === Number(inputLoginPin?.value)
+    ? showAccountInfo(currentAccount)
+    : showLoginError();
 });
 
 createUsernames(accounts);

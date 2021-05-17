@@ -83,6 +83,11 @@ nav {
   color: #777;
 }
 
+#wrong_user {
+  /* opacity: 0;
+  transition: all 1s; */
+}
+
 /* MAIN */
 .app {
   position: relative;
