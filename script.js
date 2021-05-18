@@ -61,7 +61,8 @@ const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
-const wrongUser = document.querySelector('#wrong_user');
+
+const spanWrongUser = document.querySelector('.wrong__user');
 
 //Functions
 const displayMovements = function (movements) {
@@ -112,7 +113,7 @@ const displaySummary = function ({ movements, interestRate }) {
   labelSumInterest.textContent = `${interest}€`;
 }
 
-function showAccountInfo(loggedAccount) {
+function displayWelcomeMessage (owner) {
   const hour = new Date().getHours();
   let momentOfDay;
 
@@ -120,32 +121,48 @@ function showAccountInfo(loggedAccount) {
   else if (hour >= 12 && hour < 18) momentOfDay = 'Good Afternoon';
   else momentOfDay = 'Good Evening';
 
-  labelWelcome.textContent = `${momentOfDay}, ${loggedAccount.owner.split(' ')[0]}!`;
+  labelWelcome.textContent = `${momentOfDay}, ${owner.split(' ')[0]}!`;
+}
 
+function showAccountInfo(loggedAccount) {
+  displayWelcomeMessage(loggedAccount.owner);
   displayBalance(loggedAccount.movements);
   displaySummary(loggedAccount);
   displayMovements(loggedAccount.movements);
 
-  containerApp.style.opacity = 100;
+  containerApp.style.opacity = 1;
   inputLoginUsername.value = '';
   inputLoginPin.value = '';
   inputLoginPin.blur();
 }
 
 function showLoginError() {
-  wrongUser.style.display = 'initial';
-  wrongUser.style.opacity = 1;
-  wrongUser.style.transition = 'all 1s';
-  wrongUser.textContent = 'Wrong username or pin. Please, try again.';
-  labelWelcome.textContent = 'Oh no :\'(';
+  spanWrongUser.style.opacity = 1;
+  spanWrongUser.textContent = 'Wrong username or pin. Please, try again.';
+  labelWelcome.textContent = 'Ops, something wrong is not right :\(';
 
   setTimeout(() => {
-    wrongUser.style.opacity = 0;
-    wrongUser.style.transition = 'all 1s';
+    spanWrongUser.style.opacity = 0;
+    labelWelcome.textContent = 'Log in to get started';
   }, 3000);
 
   containerApp.style.opacity = 0;
 }
+
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  const transferTo = accounts.find(acc => acc.username === inputTransferTo.value);
+  const amount = Number(inputTransferAmount.value);
+
+  transferTo?.movements.push(amount);
+  currentAccount.movements.push(Number(`-${amount}`));
+  displayBalance(currentAccount.movements);
+  displaySummary(currentAccount);
+  displayMovements(currentAccount.movements);
+
+  console.log(transferTo, currentAccount);
+})
 
 //Events
 btnLogin.addEventListener('click', function (event) {
