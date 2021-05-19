@@ -1,6 +1,16 @@
 'use strict';
 
 // Events
+btnLogin.addEventListener('click', function (event) {
+  //prevent form from submitting
+  event.preventDefault();
+
+  currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
+  currentAccount?.pin === Number(inputLoginPin?.value)
+    ? displayAccountInfo(currentAccount)
+    : showLoginError();
+});
+
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
 
@@ -18,13 +28,17 @@ btnTransfer.addEventListener('click', function (e) {
   else alert('Insira um valor válido e disponível em sua conta.');
 });
 
-//Events
-btnLogin.addEventListener('click', function (event) {
-  //prevent form from submitting
+btnClose.addEventListener('click', function (event) {
   event.preventDefault();
 
-  currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
-  currentAccount?.pin === Number(inputLoginPin?.value)
-    ? displayAccountInfo(currentAccount)
-    : showLoginError();
-});
+  // const accountToDelete = accounts.findIndex(acc => acc.username === inputCloseUsername.value);
+  if (currentAccount.username === inputCloseUsername.value && currentAccount.pin === Number(inputClosePin.value)){
+    accounts.splice(accounts.findIndex(acc => acc.username === currentAccount.username), 1);
+    containerApp.style.opacity = 0;
+
+    alert('Foi um prazer tê-lo concosco. Sua conta foi deletada, até mais!');
+  }
+  else {
+    alert('Você não pode deletar essa conta, verifique suas credenciais.')
+  }
+})
