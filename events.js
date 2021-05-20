@@ -1,9 +1,9 @@
 'use strict';
 
 // Events
-btnLogin.addEventListener('click', function (event) {
+btnLogin.addEventListener('click', function (e) {
   //prevent form from submitting
-  event.preventDefault();
+  e.preventDefault();
 
   currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
   currentAccount?.pin === Number(inputLoginPin?.value)
@@ -28,10 +28,24 @@ btnTransfer.addEventListener('click', function (e) {
   else alert('Insira um valor válido e disponível em sua conta.');
 });
 
-btnClose.addEventListener('click', function (event) {
-  event.preventDefault();
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
 
-  // const accountToDelete = accounts.findIndex(acc => acc.username === inputCloseUsername.value);
+  const amount = Number(inputLoanAmount.value);
+
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= 0.1 * amount)) {
+    console.log('taraaaan');
+    currentAccount.movements.push(amount);
+    updateUI(currentAccount);
+    inputLoanAmount.value = '';
+    inputLoanAmount.blur();
+  }
+  else alert('You can\'t request this amount, try a bit less.')
+})
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+
   if (currentAccount.username === inputCloseUsername.value && currentAccount.pin === Number(inputClosePin.value)){
     accounts.splice(accounts.findIndex(acc => acc.username === currentAccount.username), 1);
     containerApp.style.opacity = 0;
