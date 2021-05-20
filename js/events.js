@@ -1,12 +1,11 @@
 'use strict';
 
-// Events
 btnLogin.addEventListener('click', function (e) {
   //prevent form from submitting
   e.preventDefault();
 
   currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
-  currentAccount?.pin === Number(inputLoginPin?.value)
+  currentAccount?.pin === parseInt(inputLoginPin.value)
     ? displayAccountInfo(currentAccount)
     : showLoginError();
 });
@@ -14,16 +13,18 @@ btnLogin.addEventListener('click', function (e) {
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
 
-  const transferTo = accounts.find(acc => acc.username === inputTransferTo.value);
-  const amount = Number(inputTransferAmount.value);
+  const transferTo = accounts.find(acc => acc.username === inputTransferTo.value) ?? { username: null };
 
-  inputTransferAmount.value = inputTransferTo.value = '';
-  inputTransferAmount.blur();
+  if (transferTo.username) {
+    const amount = Number(inputTransferAmount.value);
+    inputTransferAmount.value = inputTransferTo.value = '';
+    inputTransferAmount.blur();
 
-  if (amount > 0 && currentAccount.balance >= amount && currentAccount.username !== transferTo.username) {
-    currentAccount.movements.push(-amount);
-    transferTo?.movements.push(amount);
-    updateUI(currentAccount);
+    if (amount > 0 && currentAccount.balance >= amount && currentAccount.username !== transferTo.username) {
+      currentAccount.movements.push(-amount);
+      transferTo?.movements.push(amount);
+      updateUI(currentAccount);
+    }
   }
   else alert('Insira um valor válido e disponível em sua conta.');
 });
@@ -41,12 +42,12 @@ btnLoan.addEventListener('click', function (e) {
     inputLoanAmount.blur();
   }
   else alert('You can\'t request this amount, try a bit less.')
-})
+});
 
 btnClose.addEventListener('click', function (e) {
   e.preventDefault();
 
-  if (currentAccount.username === inputCloseUsername.value && currentAccount.pin === Number(inputClosePin.value)){
+  if (currentAccount.username === inputCloseUsername.value && currentAccount.pin === Number(inputClosePin.value)) {
     accounts.splice(accounts.findIndex(acc => acc.username === currentAccount.username), 1);
     containerApp.style.opacity = 0;
 
@@ -55,4 +56,12 @@ btnClose.addEventListener('click', function (e) {
   else {
     alert('Você não pode deletar essa conta, verifique suas credenciais.')
   }
-})
+});
+
+// inputTransferTo.addEventListener('change', function (e) {
+//   btnTransfer.disabled = (inputTransferAmount.target?.value === '') && (e.target.value === '');
+// });
+
+// inputTransferAmount.addEventListener('change', function (e) {
+//   btnTransfer.disabled = (inputTransferTo.target?.value === '') && (e.target.value === '');
+// });
