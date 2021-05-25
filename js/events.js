@@ -58,6 +58,11 @@ btnClose.addEventListener('click', function (e) {
   }
 });
 
+btnSort.addEventListener('click', function () {
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted;
+})
+
 // inputTransferTo.addEventListener('change', function (e) {
 //   btnTransfer.disabled = (inputTransferAmount.target?.value === '') && (e.target.value === '');
 // });

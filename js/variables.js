@@ -1,6 +1,7 @@
 'use strict';
 
 let currentAccount;
+let sorted = false;
 
 // Elements
 const labelWelcome = document.querySelector('.welcome');
@@ -16,7 +17,6 @@ const containerMovements = document.querySelector('.movements');
 
 const btnLogin = document.querySelector('.login__btn');
 const btnTransfer = document.querySelector('.form__btn--transfer');
-
 const btnLoan = document.querySelector('.form__btn--loan');
 const btnClose = document.querySelector('.form__btn--close');
 const btnSort = document.querySelector('.btn--sort');

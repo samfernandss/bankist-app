@@ -1,10 +1,12 @@
 'use strict';
 
 // Functions
-const displayMovements = function (movements) {
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = '';
 
-  movements.forEach((movement, index) => {
+  const movs = sort ? movements.slice().sort((a,b) => a - b) : movements;
+
+  movs.forEach((movement, index) => {
     const typeMovement = movement > 0 ? 'deposit' : 'withdrawal';
 
     const html = `
