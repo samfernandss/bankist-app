@@ -1,10 +1,10 @@
 'use strict';
 
 // Functions
-const displayMovements = function (movements, sort = false) {
+const displayMovements = function (movements) {
   containerMovements.innerHTML = '';
 
-  const movs = sort ? movements.slice().sort((a,b) => a - b) : movements;
+  const movs = sorted ? movements.slice().sort((a,b) => a - b) : movements;
 
   movs.forEach((movement, index) => {
     const typeMovement = movement > 0 ? 'deposit' : 'withdrawal';
@@ -12,7 +12,7 @@ const displayMovements = function (movements, sort = false) {
     const html = `
         <div class="movements__row">
           <div class="movements__type movements__type--${typeMovement}">${index + 1} ${typeMovement}</div>
-          <div class="movements__value">${movement}€</div>
+          <div class="movements__value">${movement.toFixed(2)}€</div>
         </div>
       `;
 
@@ -28,7 +28,7 @@ const createUsernames = function (accs) {
 
 const calcBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, current) => acc + current, 0);
-  labelBalance.textContent = `${acc.balance}€`;
+  labelBalance.textContent = `${acc.balance.toFixed(2)}€`;
 }
 
 const displaySummary = function ({ movements, interestRate }) {
@@ -46,9 +46,9 @@ const displaySummary = function ({ movements, interestRate }) {
     .filter(int => int >= 1)
     .reduce((acc, cur) => acc + cur, 0);
 
-  labelSumIn.textContent = `${incomes}€`;
-  labelSumOut.textContent = `${Math.abs(out)}€`;
-  labelSumInterest.textContent = `${interest}€`;
+  labelSumIn.textContent = `${incomes.toFixed(2)}€`;
+  labelSumOut.textContent = `${Math.abs(out).toFixed(2)}€`;
+  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
 }
 
 const displayWelcomeMessage = function (owner) {
@@ -89,4 +89,8 @@ const updateUI = function (acc) {
   calcBalance(acc);
   displaySummary(acc);
   displayMovements(acc.movements);
+}
+
+const randomInt = (min, max) => {
+  Math.floor(Math.random() * (max - min) + 1) + min;
 }
