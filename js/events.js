@@ -22,7 +22,9 @@ btnTransfer.addEventListener('click', function (e) {
 
     if (amount > 0 && currentAccount.balance >= amount && currentAccount.username !== transferTo.username) {
       currentAccount.movements.push(-amount);
+      currentAccount.movementsDates.push(new Date().toISOString());
       transferTo?.movements.push(amount);
+      transferTo?.movementsDates.push(new Date().toISOString());
       updateUI(currentAccount);
     }
   }
@@ -36,11 +38,13 @@ btnLoan.addEventListener('click', function (e) {
 
   if (amount > 0 && currentAccount.movements.some(mov => mov >= 0.1 * amount)) {
     currentAccount.movements.push(amount);
+    currentAccount.movementsDates.push(new Date().toISOString());
     updateUI(currentAccount);
     inputLoanAmount.value = '';
     inputLoanAmount.blur();
   }
-  else alert('You can\'t request this amount, try a bit less.')
+  else alert('You can\'t request this amount, try a bit less.');
+  console.log(currentAccount.movementsDates);
 });
 
 btnClose.addEventListener('click', function (e) {
@@ -59,7 +63,7 @@ btnClose.addEventListener('click', function (e) {
 
 btnSort.addEventListener('click', function () {
   sorted = !sorted;
-  displayMovements(currentAccount.movements);
+  displayMovements(currentAccount);
 });
 
 // inputTransferTo.addEventListener('change', function (e) {

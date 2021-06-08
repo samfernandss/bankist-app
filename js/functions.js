@@ -1,17 +1,23 @@
 'use strict';
 
-// Functions
-const displayMovements = function (movements) {
+const displayMovements = function (acc) {
   containerMovements.innerHTML = '';
 
-  const movs = sorted ? movements.slice().sort((a,b) => a - b) : movements;
+  const movs = sorted ? acc.movements.slice().sort((a,b) => a - b) : acc.movements;
+
 
   movs.forEach((movement, index) => {
     const typeMovement = movement > 0 ? 'deposit' : 'withdrawal';
+    const date = new Date(acc.movementsDates[index]);
+    const day = `${date.getDate()}`.padStart(2,'0');
+    const month = `${date.getMonth() + 1}`.padStart(2,'0');
+    const year = date.getFullYear();
+    const displayMovDate = `${day}/${month}/${year}`;
 
     const html = `
         <div class="movements__row">
           <div class="movements__type movements__type--${typeMovement}">${index + 1} ${typeMovement}</div>
+          <div class="movements__date">${displayMovDate}</div>
           <div class="movements__value">${movement.toFixed(2)}€</div>
         </div>
       `;
@@ -65,6 +71,7 @@ const displayWelcomeMessage = function (owner) {
 const displayAccountInfo = function (loggedAccount) {
   displayWelcomeMessage(loggedAccount.owner);
   updateUI(loggedAccount);
+  displayLoginDate();
 
   containerApp.style.opacity = 1;
   inputLoginUsername.value = '';
@@ -88,9 +95,24 @@ const showLoginError = function () {
 const updateUI = function (acc) {
   calcBalance(acc);
   displaySummary(acc);
-  displayMovements(acc.movements);
+  displayMovements(acc);
 }
 
 const randomInt = (min, max) => {
   Math.floor(Math.random() * (max - min) + 1) + min;
 }
+
+const displayLoginDate = function () {
+  const now = new Date();
+  const day = `${now.getDate()}`.padStart(2,'0');
+  const month = `${now.getMonth() + 1}`.padStart(2,'0');
+  const year = now.getFullYear();
+  const hour = `${now.getHours()}`.padStart(2,'0');
+  const minute = `${now.getMinutes()}`.padStart(2, '0');
+
+  labelDate.textContent = `${day}/${month}/${year}, ${hour}:${minute}`;
+}
+
+//FAKE LOGIN
+currentAccount = account5;
+displayAccountInfo(currentAccount);
