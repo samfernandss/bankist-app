@@ -5,19 +5,12 @@ const displayMovements = function (acc) {
 
   const movs = sorted ? acc.movements.slice().sort((a,b) => a - b) : acc.movements;
 
-
   movs.forEach((movement, index) => {
     const typeMovement = movement > 0 ? 'deposit' : 'withdrawal';
-    const date = new Date(acc.movementsDates[index]);
-    const day = `${date.getDate()}`.padStart(2,'0');
-    const month = `${date.getMonth() + 1}`.padStart(2,'0');
-    const year = date.getFullYear();
-    const displayMovDate = `${day}/${month}/${year}`;
-
     const html = `
         <div class="movements__row">
           <div class="movements__type movements__type--${typeMovement}">${index + 1} ${typeMovement}</div>
-          <div class="movements__date">${displayMovDate}</div>
+          <div class="movements__date">${formatDate(acc.movementsDates[index], true)}</div>
           <div class="movements__value">${movement.toFixed(2)}€</div>
         </div>
       `;
@@ -71,7 +64,8 @@ const displayWelcomeMessage = function (owner) {
 const displayAccountInfo = function (loggedAccount) {
   displayWelcomeMessage(loggedAccount.owner);
   updateUI(loggedAccount);
-  displayLoginDate();
+  //displayLoginDate();
+  labelDate.textContent = formatDate('');
 
   containerApp.style.opacity = 1;
   inputLoginUsername.value = '';
@@ -102,15 +96,15 @@ const randomInt = (min, max) => {
   Math.floor(Math.random() * (max - min) + 1) + min;
 }
 
-const displayLoginDate = function () {
-  const now = new Date();
-  const day = `${now.getDate()}`.padStart(2,'0');
-  const month = `${now.getMonth() + 1}`.padStart(2,'0');
-  const year = now.getFullYear();
-  const hour = `${now.getHours()}`.padStart(2,'0');
-  const minute = `${now.getMinutes()}`.padStart(2, '0');
+const formatDate = function(date, isMovementDate = false){
+  const myDate = isMovementDate ? new Date(date) : new Date();
+  const day = `${myDate.getDate()}`.padStart(2,'0');
+  const month = `${myDate.getMonth() + 1}`.padStart(2,'0');
+  const year = myDate.getFullYear();
+  const hour = `${myDate.getHours()}`.padStart(2,'0');
+  const minute = `${myDate.getMinutes()}`.padStart(2, '0');
 
-  labelDate.textContent = `${day}/${month}/${year}, ${hour}:${minute}`;
+  return `${day}/${month}/${year}${isMovementDate ? '' : `, ${hour}:${minute}`}`;
 }
 
 //FAKE LOGIN
