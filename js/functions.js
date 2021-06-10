@@ -7,10 +7,12 @@ const displayMovements = function (acc) {
 
   movs.forEach((movement, index) => {
     const typeMovement = movement > 0 ? 'deposit' : 'withdrawal';
+    const movsDate = new Date(acc.movementsDates[index]);
+    const displayDate = formatDate(movsDate, true);
     const html = `
         <div class="movements__row">
           <div class="movements__type movements__type--${typeMovement}">${index + 1} ${typeMovement}</div>
-          <div class="movements__date">${formatDate(acc.movementsDates[index], true)}</div>
+          <div class="movements__date">${displayDate}</div>
           <div class="movements__value">${movement.toFixed(2)}€</div>
         </div>
       `;
@@ -98,13 +100,27 @@ const randomInt = (min, max) => {
 
 const formatDate = function(date, isMovementDate = false){
   const myDate = isMovementDate ? new Date(date) : new Date();
-  const day = `${myDate.getDate()}`.padStart(2,'0');
-  const month = `${myDate.getMonth() + 1}`.padStart(2,'0');
-  const year = myDate.getFullYear();
-  const hour = `${myDate.getHours()}`.padStart(2,'0');
-  const minute = `${myDate.getMinutes()}`.padStart(2, '0');
+  const locale = currentAccount.locale;
+  const options = {
+    day: 'numeric',
+    month: 'numeric',
+    year: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric'
+  };
 
-  return `${day}/${month}/${year}${isMovementDate ? '' : `, ${hour}:${minute}`}`;
+  if (isMovementDate) {
+    const daysPassed = calcDaysPassed(myDate, new Date());
+    if (daysPassed === 0) return 'Today';
+    if (daysPassed === 1) return 'Yesterday';
+    if (daysPassed <= 7) return `${daysPassed} days ago`;
+  };
+
+  return new Intl.DateTimeFormat(locale, options).format(myDate);
+}
+
+const calcDaysPassed = function(date1, date2) {
+  return Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
 }
 
 //FAKE LOGIN
