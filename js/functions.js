@@ -9,11 +9,12 @@ const displayMovements = function (acc) {
     const typeMovement = movement > 0 ? 'deposit' : 'withdrawal';
     const movsDate = new Date(acc.movementsDates[index]);
     const displayDate = formatDate(movsDate, true);
+
     const html = `
         <div class="movements__row">
           <div class="movements__type movements__type--${typeMovement}">${index + 1} ${typeMovement}</div>
           <div class="movements__date">${displayDate}</div>
-          <div class="movements__value">${movement.toFixed(2)}€</div>
+          <div class="movements__value">${formattedCurrency(movement)}</div>
         </div>
       `;
 
@@ -29,7 +30,7 @@ const createUsernames = function (accs) {
 
 const calcBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, current) => acc + current, 0);
-  labelBalance.textContent = `${acc.balance.toFixed(2)}€`;
+  labelBalance.textContent = formattedCurrency(acc.balance);
 }
 
 const displaySummary = function ({ movements, interestRate }) {
@@ -47,9 +48,9 @@ const displaySummary = function ({ movements, interestRate }) {
     .filter(int => int >= 1)
     .reduce((acc, cur) => acc + cur, 0);
 
-  labelSumIn.textContent = `${incomes.toFixed(2)}€`;
-  labelSumOut.textContent = `${Math.abs(out).toFixed(2)}€`;
-  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
+  labelSumIn.textContent = formattedCurrency(incomes);
+  labelSumOut.textContent = formattedCurrency(Math.abs(out));
+  labelSumInterest.textContent = formattedCurrency(interest);
 }
 
 const displayWelcomeMessage = function (owner) {
@@ -121,6 +122,10 @@ const formatDate = function(date, isMovementDate = false){
 
 const calcDaysPassed = function(date1, date2) {
   return Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+}
+
+const formattedCurrency = function (mov) {
+  return new Intl.NumberFormat(currentAccount.locale, {style: 'currency', currency: currentAccount.currency}).format(mov);
 }
 
 //FAKE LOGIN

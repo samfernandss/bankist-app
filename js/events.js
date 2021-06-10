@@ -44,7 +44,6 @@ btnLoan.addEventListener('click', function (e) {
     inputLoanAmount.blur();
   }
   else alert('You can\'t request this amount, try a bit less.');
-  console.log(currentAccount.movementsDates);
 });
 
 btnClose.addEventListener('click', function (e) {
