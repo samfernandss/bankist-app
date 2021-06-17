@@ -5,7 +5,7 @@ btnLogin.addEventListener('click', function (e) {
   e.preventDefault();
 
   clearInterval(loggedtimer);
-  time = 30;
+  time = 300;
   labelTimer.textContent = '...';
 
   currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
