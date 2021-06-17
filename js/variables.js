@@ -2,6 +2,8 @@
 
 let currentAccount;
 let sorted = false;
+let time = 300;
+let loggedtimer = null;
 
 // Elements
 const labelWelcome = document.querySelector('.welcome');
@@ -30,3 +32,5 @@ const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
 const spanWrongUser = document.querySelector('.wrong__user');
+
+const btnLogout = document.querySelector('#btn-logout');

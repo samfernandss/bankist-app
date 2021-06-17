@@ -4,9 +4,16 @@ btnLogin.addEventListener('click', function (e) {
   //prevent form from submitting
   e.preventDefault();
 
+  clearInterval(loggedtimer);
+  time = 30;
+  labelTimer.textContent = '...';
+
   currentAccount = accounts.find(acc => acc.username === inputLoginUsername.value);
   currentAccount?.pin === parseInt(inputLoginPin.value)
-    ? displayAccountInfo(currentAccount)
+    ? (
+        displayAccountInfo(currentAccount),
+        setLogoutTimer()
+    )
     : showLoginError();
 });
 
@@ -63,6 +70,13 @@ btnClose.addEventListener('click', function (e) {
 btnSort.addEventListener('click', function () {
   sorted = !sorted;
   displayMovements(currentAccount);
+});
+
+btnLogout.addEventListener('click', () => {
+  clearInterval(loggedtimer);
+  time = 30;
+  labelTimer.textContent = '...';
+  logoutAccount();
 });
 
 // inputTransferTo.addEventListener('change', function (e) {

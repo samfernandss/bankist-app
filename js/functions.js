@@ -95,10 +95,6 @@ const updateUI = function (acc) {
   displayMovements(acc);
 }
 
-const randomInt = (min, max) => {
-  Math.floor(Math.random() * (max - min) + 1) + min;
-}
-
 const formatDate = function(date, isMovementDate = false){
   const myDate = isMovementDate ? new Date(date) : new Date();
   const locale = currentAccount.locale;
@@ -128,6 +124,26 @@ const formattedCurrency = function (mov) {
   return new Intl.NumberFormat(currentAccount.locale, {style: 'currency', currency: currentAccount.currency}).format(mov);
 }
 
+const setLogoutTimer = function () {
+  loggedtimer = setInterval(() => {
+    const min = String(Math.trunc(time / 60));
+    const sec = String(time % 60);
+    labelTimer.textContent = `${min.padStart(2, '0')}:${sec.padStart(2, '0')}`;
+    if (time === 0) {
+      logoutAccount();
+      clearInterval(loggedtimer);
+    }
+    time--;
+  }, 1000);
+}
+
+const logoutAccount = function () {
+  // alert('Hey, are you there? You\' be logged out for security.');
+  containerApp.style.opacity = 0;
+  labelWelcome.textContent = 'Log in to get started';
+  currentAccount = null;
+}
+
 //FAKE LOGIN
-currentAccount = account5;
-displayAccountInfo(currentAccount);
+// currentAccount = account5;
+// displayAccountInfo(currentAccount);
